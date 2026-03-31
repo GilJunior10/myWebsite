@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Meu Portfólio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f5f2ee;
+      --ink: #1a1714;
+      --muted: #7a7672;
+      --accent: #c8490a;
+      --accent-light: #f0d5c8;
+      --border: #ddd9d4;
+      --card: #fffefb;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'DM Mono', monospace;
+      font-size: 15px;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* ── CURSOR ── */
+    .cursor {
+      width: 10px; height: 10px;
+      background: var(--accent);
+      border-radius: 50%;
+      position: fixed; top: 0; left: 0;
+      pointer-events: none;
+      z-index: 9999;
+      transition: transform 0.15s ease, width 0.2s, height 0.2s;
+      transform: translate(-50%, -50%);
+    }
+    .cursor.expand { width: 36px; height: 36px; background: transparent; border: 1.5px solid var(--accent); }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1.4rem 3rem;
+      z-index: 100;
+      background: transparent;
+      transition: background 0.3s;
+    }
+    nav.scrolled { background: rgba(245,242,238,0.92); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); }
+    .nav-logo { font-family: 'DM Serif Display', serif; font-size: 1.3rem; color: var(--ink); text-decoration: none; }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a { color: var(--muted); text-decoration: none; font-size: 0.82rem; letter-spacing: 0.06em; text-transform: uppercase; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--accent); }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100vh;
+      display: flex; align-items: center;
+      padding: 0 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+      max-width: 1100px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    .hero-text { opacity: 0; transform: translateY(30px); animation: fadeUp 0.9s ease 0.2s forwards; }
+    .hero-tag {
+      font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--accent); border: 1px solid var(--accent);
+      display: inline-block; padding: 0.3rem 0.8rem; border-radius: 2px; margin-bottom: 1.5rem;
+    }
+    h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(2.8rem, 5vw, 4.5rem);
+      line-height: 1.1;
+      margin-bottom: 1.2rem;
+    }
+    h1 em { font-style: italic; color: var(--accent); }
+    .hero-sub { color: var(--muted); max-width: 400px; margin-bottom: 2.5rem; font-size: 0.92rem; }
+    .btn {
+      display: inline-block; padding: 0.85rem 2rem;
+      background: var(--ink); color: var(--bg);
+      text-decoration: none; font-size: 0.8rem;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      transition: background 0.2s, color 0.2s;
+      border: 2px solid var(--ink);
+    }
+    .btn:hover { background: var(--accent); border-color: var(--accent); }
+    .btn-ghost {
+      background: transparent; color: var(--ink);
+      margin-left: 1rem;
+    }
+    .btn-ghost:hover { background: var(--accent-light); border-color: var(--accent); color: var(--accent); }
+
+    .hero-visual {
+      opacity: 0; transform: translateX(30px); animation: fadeLeft 0.9s ease 0.4s forwards;
+      display: flex; justify-content: center;
+    }
+    .avatar-wrap {
+      width: 320px; height: 380px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      position: relative;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+    .avatar-wrap::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, var(--accent-light) 0%, transparent 60%);
+      opacity: 0.5;
+    }
+    .avatar-initials {
+      font-family: 'DM Serif Display', serif;
+      font-size: 7rem;
+      color: var(--accent);
+      opacity: 0.18;
+      user-select: none;
+      position: absolute;
+    }
+    .avatar-info {
+      position: absolute; bottom: 1.5rem; left: 1.5rem; right: 1.5rem;
+      background: var(--bg); padding: 1rem;
+      border-top: 3px solid var(--accent);
+    }
+    .avatar-info strong { font-family: 'DM Serif Display', serif; font-size: 1.1rem; display: block; }
+    .avatar-info span { font-size: 0.78rem; color: var(--muted); }
+    .status-dot { display: inline-block; width: 7px; height: 7px; background: #3aaa5c; border-radius: 50%; margin-right: 6px; animation: pulse 2s infinite; }
+
+    /* ── ABOUT ── */
+    section { padding: 6rem 3rem; }
+    .section-label { font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.5rem; }
+    h2 { font-family: 'DM Serif Display', serif; font-size: clamp(2rem, 3.5vw, 3rem); margin-bottom: 2rem; }
+
+    #sobre .inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr; gap: 5rem; align-items: start; }
+    .about-text p { color: var(--muted); margin-bottom: 1rem; }
+    .about-text p strong { color: var(--ink); }
+    .skills-grid { display: flex; flex-direction: column; gap: 1rem; }
+    .skill-item { display: flex; flex-direction: column; gap: 0.4rem; }
+    .skill-name { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; display: flex; justify-content: space-between; }
+    .skill-bar { height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; }
+    .skill-fill { height: 100%; background: var(--accent); border-radius: 2px; width: 0; transition: width 1.2s cubic-bezier(0.4,0,0.2,1); }
+
+    /* ── PROJETOS ── */
+    #projetos { background: var(--ink); color: var(--bg); }
+    #projetos .section-label { color: var(--accent); }
+    #projetos h2 { color: var(--bg); }
+    .projects-inner { max-width: 1100px; margin: 0 auto; }
+    .projects-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 3rem; }
+    .project-card {
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 2rem;
+      position: relative; overflow: hidden;
+      transition: border-color 0.3s, transform 0.3s;
+      cursor: pointer;
+    }
+    .project-card:hover { border-color: var(--accent); transform: translateY(-4px); }
+    .project-card::after { content: '↗'; position: absolute; top: 1.5rem; right: 1.5rem; font-size: 1.2rem; color: var(--accent); opacity: 0; transition: opacity 0.3s; }
+    .project-card:hover::after { opacity: 1; }
+    .project-num { font-size: 0.7rem; color: var(--accent); letter-spacing: 0.1em; margin-bottom: 1rem; }
+    .project-card h3 { font-family: 'DM Serif Display', serif; font-size: 1.4rem; margin-bottom: 0.8rem; color: var(--bg); }
+    .project-card p { font-size: 0.83rem; color: rgba(245,242,238,0.55); margin-bottom: 1.5rem; }
+    .project-tags { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .tag { font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.2rem 0.6rem; border: 1px solid rgba(255,255,255,0.15); color: rgba(245,242,238,0.5); }
+
+    /* ── CONTATO ── */
+    #contato .inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: start; }
+    .contact-info p { color: var(--muted); margin-bottom: 2rem; }
+    .contact-links { display: flex; flex-direction: column; gap: 0.8rem; }
+    .contact-link { display: flex; align-items: center; gap: 1rem; color: var(--ink); text-decoration: none; padding: 1rem; border: 1px solid var(--border); transition: border-color 0.2s, background 0.2s; font-size: 0.85rem; }
+    .contact-link:hover { border-color: var(--accent); background: var(--accent-light); }
+    .contact-link span { color: var(--accent); font-size: 1.1rem; }
+    .contact-form { display: flex; flex-direction: column; gap: 1rem; }
+    .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+    .form-group label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); }
+    .form-group input, .form-group textarea {
+      background: var(--card); border: 1px solid var(--border);
+      padding: 0.85rem 1rem; font-family: 'DM Mono', monospace; font-size: 0.88rem;
+      color: var(--ink); outline: none; transition: border-color 0.2s; resize: none;
+    }
+    .form-group input:focus, .form-group textarea:focus { border-color: var(--accent); }
+    .form-group textarea { height: 120px; }
+    .btn-submit { align-self: flex-start; cursor: pointer; font-family: 'DM Mono', monospace; }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem 3rem;
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 0.78rem; color: var(--muted);
+      max-width: 100%;
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeLeft { to { opacity: 1; transform: translateX(0); } }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      nav { padding: 1.2rem 1.5rem; }
+      .nav-links { display: none; }
+      section { padding: 4rem 1.5rem; }
+      #hero { padding: 0 1.5rem; }
+      .hero-grid { grid-template-columns: 1fr; gap: 2.5rem; padding-top: 6rem; }
+      .hero-visual { order: -1; }
+      .avatar-wrap { width: 260px; height: 300px; }
+      #sobre .inner { grid-template-columns: 1fr; gap: 2.5rem; }
+      .projects-grid { grid-template-columns: 1fr; }
+      #contato .inner { grid-template-columns: 1fr; gap: 2.5rem; }
+      footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="cursor" id="cursor"></div>
+
+  <!-- NAV -->
+  <nav id="nav">
+    <a href="#hero" class="nav-logo">Dev.</a>
+    <ul class="nav-links">
+      <li><a href="#sobre">Sobre</a></li>
+      <li><a href="#projetos">Projetos</a></li>
+      <li><a href="#contato">Contato</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-grid">
+      <div class="hero-text">
+        <span class="hero-tag">Disponível para projetos</span>
+        <h1>Olá, sou <em>Seu Nome</em></h1>
+        <p class="hero-sub">Desenvolvedor web em formação, apaixonado por criar experiências digitais simples, funcionais e bem feitas.</p>
+        <a href="#projetos" class="btn">Ver projetos</a>
+        <a href="#contato" class="btn btn-ghost">Entrar em contato</a>
+      </div>
+      <div class="hero-visual">
+        <div class="avatar-wrap">
+          <div class="avatar-initials">SN</div>
+          <div class="avatar-info">
+            <strong>Seu Nome</strong>
+            <span><span class="status-dot"></span>Estudando Dev Web</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SOBRE -->
+  <section id="sobre">
+    <div class="inner">
+      <div class="about-text reveal">
+        <p class="section-label">Sobre mim</p>
+        <h2>Quem sou eu?</h2>
+        <p>Sou estudante de desenvolvimento web, explorando o universo do frontend com HTML, CSS e JavaScript. Cada projeto é uma chance de aprender algo novo e transformar código em experiências reais.</p>
+        <p>Atualmente focado em <strong>fundamentos sólidos</strong>: semântica HTML, CSS moderno (Flexbox, Grid) e lógica com JavaScript. Em breve, React e backend.</p>
+        <p>Quando não estou codando, gosto de estudar design de interfaces, ler sobre tecnologia e descobrir novos projetos open source.</p>
+      </div>
+      <div class="skills-grid reveal">
+        <p class="section-label">Habilidades</p>
+        <div class="skill-item">
+          <span class="skill-name"><span>HTML</span><span>90%</span></span>
+          <div class="skill-bar"><div class="skill-fill" data-width="90"></div></div>
+        </div>
+        <div class="skill-item">
+          <span class="skill-name"><span>CSS</span><span>80%</span></span>
+          <div class="skill-bar"><div class="skill-fill" data-width="80"></div></div>
+        </div>
+        <div class="skill-item">
+          <span class="skill-name"><span>JavaScript</span><span>60%</span></span>
+          <div class="skill-bar"><div class="skill-fill" data-width="60"></div></div>
+        </div>
+        <div class="skill-item">
+          <span class="skill-name"><span>Git</span><span>50%</span></span>
+          <div class="skill-bar"><div class="skill-fill" data-width="50"></div></div>
+        </div>
+        <div class="skill-item">
+          <span class="skill-name"><span>Responsivo</span><span>75%</span></span>
+          <div class="skill-bar"><div class="skill-fill" data-width="75"></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJETOS -->
+  <section id="projetos">
+    <div class="projects-inner">
+      <p class="section-label reveal">Projetos</p>
+      <h2 class="reveal">O que já construí</h2>
+      <div class="projects-grid">
+
+        <div class="project-card reveal">
+          <p class="project-num">01</p>
+          <h3>Calculadora</h3>
+          <p>Calculadora funcional com operações básicas, construída com HTML, CSS e lógica em JS puro.</p>
+          <div class="project-tags">
+            <span class="tag">HTML</span><span class="tag">CSS</span><span class="tag">JS</span>
+          </div>
+        </div>
+
+        <div class="project-card reveal">
+          <p class="project-num">02</p>
+          <h3>To-Do List</h3>
+          <p>Gerenciador de tarefas com localStorage, filtros e animações de entrada e saída.</p>
+          <div class="project-tags">
+            <span class="tag">HTML</span><span class="tag">CSS</span><span class="tag">JS</span>
+          </div>
+        </div>
+
+        <div class="project-card reveal">
+          <p class="project-num">03</p>
+          <h3>Landing Page</h3>
+          <p>Página de apresentação de produto fictício com seções responsivas e micro-animações.</p>
+          <div class="project-tags">
+            <span class="tag">HTML</span><span class="tag">CSS</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTATO -->
+  <section id="contato">
+    <div class="inner">
+      <div class="contact-info reveal">
+        <p class="section-label">Contato</p>
+        <h2>Vamos conversar?</h2>
+        <p>Estou aberto a feedback, colaborações, estágios e qualquer oportunidade de aprender.</p>
+        <div class="contact-links">
+          <a href="mailto:seu@email.com" class="contact-link"><span>✉</span> seu@email.com</a>
+          <a href="https://github.com/seuusuario" target="_blank" class="contact-link"><span>⌥</span> github.com/seuusuario</a>
+          <a href="https://linkedin.com/in/seuperfil" target="_blank" class="contact-link"><span>◈</span> linkedin.com/in/seuperfil</a>
+        </div>
+      </div>
+      <div class="contact-form reveal">
+        <p class="section-label">Mensagem</p>
+        <div class="form-group">
+          <label for="nome">Nome</label>
+          <input type="text" id="nome" placeholder="Seu nome" />
+        </div>
+        <div class="form-group">
+          <label for="email">E-mail</label>
+          <input type="email" id="email" placeholder="seu@email.com" />
+        </div>
+        <div class="form-group">
+          <label for="msg">Mensagem</label>
+          <textarea id="msg" placeholder="Olá, gostaria de..."></textarea>
+        </div>
+        <button class="btn btn-submit" onclick="enviarMensagem()">Enviar mensagem</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <span>© 2025 Seu Nome — Feito com HTML, CSS & JS</span>
+    <span>Estudando dev web ☕</span>
+  </footer>
+
+  <script>
+    // ── Cursor personalizado
+    const cursor = document.getElementById('cursor');
+    document.addEventListener('mousemove', e => {
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top = e.clientY + 'px';
+    });
+    document.querySelectorAll('a, button, .project-card').forEach(el => {
+      el.addEventListener('mouseenter', () => cursor.classList.add('expand'));
+      el.addEventListener('mouseleave', () => cursor.classList.remove('expand'));
+    });
+
+    // ── Navbar scroll
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 40);
+    });
+
+    // ── Reveal on scroll
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => entry.target.classList.add('visible'), i * 80);
+        }
+      });
+    }, { threshold: 0.12 });
+    reveals.forEach(el => observer.observe(el));
+
+    // ── Skill bars animadas
+    const skillObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.querySelectorAll('.skill-fill').forEach(bar => {
+            bar.style.width = bar.dataset.width + '%';
+          });
+        }
+      });
+    }, { threshold: 0.3 });
+    const skillSection = document.querySelector('#sobre');
+    if (skillSection) skillObserver.observe(skillSection);
+
+    // ── Envio de formulário (simulado)
+    function enviarMensagem() {
+      const nome = document.getElementById('nome').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const msg = document.getElementById('msg').value.trim();
+      if (!nome || !email || !msg) {
+        alert('Por favor, preencha todos os campos.');
+        return;
+      }
+      alert(`Mensagem enviada, ${nome}! Em breve entrarei em contato.`);
+      document.getElementById('nome').value = '';
+      document.getElementById('email').value = '';
+      document.getElementById('msg').value = '';
+    }
+
+    // ── Typed text no hero
+    const typed = document.querySelector('h1 em');
+    const name = typed.textContent;
+    typed.textContent = '';
+    let i = 0;
+    function type() {
+      if (i < name.length) {
+        typed.textContent += name[i++];
+        setTimeout(type, 65);
+      }
+    }
+    setTimeout(type, 900);
+  </script>
+</body>
+</html>
