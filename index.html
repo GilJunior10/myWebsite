@@ -2,454 +2,386 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Gil Portfólio</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>Lavanderia — Demo Experimental</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css">
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --bg: #f5f2ee;
-      --ink: #1a1714;
-      --muted: #7a7672;
-      --accent: #c8490a;
-      --accent-light: #f0d5c8;
-      --border: #ddd9d4;
-      --card: #fffefb;
-    }
-
-    html { scroll-behavior: smooth; }
-
-    body {
-      background: var(--bg);
-      color: var(--ink);
-      font-family: 'DM Mono', monospace;
-      font-size: 15px;
-      line-height: 1.7;
-      overflow-x: hidden;
-    }
-
-    /* ── CURSOR ── */
-    .cursor {
-      width: 10px; height: 10px;
-      background: var(--accent);
-      border-radius: 60%;
-      position: fixed; top: 0; left: 0;
-      pointer-events: none;
-      z-index: 9999;
-      transition: transform 0.15s ease, width 0.2s, height 0.2s;
-      transform: translate(-50%, -50%);
-    }
-    .cursor.expand { width: 36px; height: 36px; background: transparent; border: 1.5px solid var(--accent); }
-
-    /* ── NAV ── */
-    nav {
-      position: fixed; top: 0; left: 0; right: 0;
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 1.4rem 3rem;
-      z-index: 100;
-      background: transparent;
-      transition: background 0.3s;
-    }
-    nav.scrolled { background: rgba(245,242,238,0.92); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); }
-    .nav-logo { font-family: 'DM Serif Display', serif; font-size: 1.3rem; color: var(--ink); text-decoration: none; }
-    .nav-links { display: flex; gap: 2rem; list-style: none; }
-    .nav-links a { color: var(--muted); text-decoration: none; font-size: 0.82rem; letter-spacing: 0.06em; text-transform: uppercase; transition: color 0.2s; }
-    .nav-links a:hover { color: var(--accent); }
-
-    /* ── HERO ── */
-    #hero {
-      min-height: 100vh;
-      display: flex; align-items: center;
-      padding: 0 3rem;
-      position: relative;
-      overflow: hidden;
-    }
-    .hero-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 4rem;
-      align-items: center;
-      max-width: 1100px;
-      margin: 0 auto;
-      width: 100%;
-    }
-    .hero-text { opacity: 25; transform: translateY(30px); animation: fadeUp 0.9s ease 0.2s forwards;
-    }
-    .hero-tag {
-      font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase;
-      color: var(--accent); border: 1px solid var(--accent);
-      display: inline-block; padding: 0.3rem 0.8rem; border-radius: 2px; margin-bottom: 1.5rem;
-    }
-    h1 {
-      font-family: 'DM Serif Display', serif;
-      font-size: clamp(2.8rem, 5vw, 4.5rem);
-      line-height: 1.1;
-      margin-bottom: 1.2rem;
-    }
-    h1 em { font-style: italic; color: var(--accent); }
-    .hero-sub { color: var(--muted); max-width: 400px; margin-bottom: 2.5rem; font-size: 0.92rem; }
-    .btn {
-      display: inline-block; padding: 0.85rem 2rem;
-      background: var(--ink); color: var(--bg);
-      text-decoration: none; font-size: 0.8rem;
-      letter-spacing: 0.08em; text-transform: uppercase;
-      transition: background 0.2s, color 0.2s;
-      border: 2px solid var(--ink);
-    }
-    .btn:hover { background: var(--accent); border-color: var(--accent); }
-    .btn-ghost {
-      background: transparent; color: var(--ink);
-      margin-left: 1rem;
-    }
-    .btn-ghost:hover { background: var(--accent-light); border-color: var(--accent); color: var(--accent); }
-
-    .hero-visual {
-      opacity: 0; transform: translateX(30px); animation: fadeLeft 0.9s ease 0.4s forwards;
-      display: flex; justify-content: center;
-    }
-    .avatar-wrap {
-      width: 320px; height: 380px;
-      background: #f4e8d3;
-      border: 1px solid rgba(26, 23, 20, 0.08);
-      box-shadow: 0 20px 40px rgba(26, 23, 20, 0.08);
-      position: relative;
-      display: flex; align-items: center; justify-content: center;
-      overflow: hidden;
-    }
-    .avatar-wrap::before {
-      content: '';
-      position: absolute; inset: 0;
-      background: linear-gradient(135deg, rgba(210, 160, 110, 0.08) 0%, transparent 60%);
-      opacity: 0.12;
-    }
-    .avatar-initials {
-      font-family: 'DM Serif Display', serif;
-      font-size: 7rem;
-      color: var(--accent);
-      opacity: 0.18;
-      user-select: none;
-      position: absolute;
-    }
-    .avatar-info {
-      position: absolute; bottom: 1.5rem; left: 1.5rem; right: 1.5rem;
-      background: #fff5e8;
-      padding: 1rem;
-      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.06);
-      border-top: 3px solid var(--accent);
-    }
-    .avatar-info strong { font-family: 'DM Serif Display', serif; font-size: 1.1rem; display: block; }
-    .avatar-info span { font-size: 0.78rem; color: var(--muted); }
-    .status-dot { display: inline-block; width: 7px; height: 7px; background: #3aaa5c; border-radius: 50%; margin-right: 6px; animation: pulse 2s infinite; }
-
-    /* ── ABOUT ── */
-    section { padding: 6rem 3rem; }
-    .section-label { font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.5rem; }
-    h2 { font-family: 'DM Serif Display', serif; font-size: clamp(2rem, 3.5vw, 3rem); margin-bottom: 2rem; }
-
-    #sobre .inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr; gap: 5rem; align-items: start; }
-    .about-text p { color: var(--muted); margin-bottom: 1rem; }
-    .about-text p strong { color: var(--ink); }
-    .skills-grid { display: flex; flex-direction: column; gap: 1rem; }
-    .skill-item { display: flex; flex-direction: column; gap: 0.4rem; }
-    .skill-name { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; display: flex; justify-content: space-between; }
-    .skill-bar { height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; }
-    .skill-fill { height: 100%; background: var(--accent); border-radius: 2px; width: 0; transition: width 1.2s cubic-bezier(0.4,0,0.2,1); }
-
-    /* ── PROJETOS ── */
-    #projetos { background: var(--ink); color: var(--bg); }
-    #projetos .section-label { color: var(--accent); }
-    #projetos h2 { color: var(--bg); }
-    .projects-inner { max-width: 1100px; margin: 0 auto; }
-    .projects-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 3rem; }
-    .project-card {
-      border: 1px solid rgba(255,255,255,0.1);
-      padding: 2rem;
-      position: relative; overflow: hidden;
-      transition: border-color 0.3s, transform 0.3s;
-      cursor: pointer;
-    }
-    .project-card:hover { border-color: var(--accent); transform: translateY(-4px); }
-    .project-card::after { content: '↗'; position: absolute; top: 1.5rem; right: 1.5rem; font-size: 1.2rem; color: var(--accent); opacity: 0; transition: opacity 0.3s; }
-    .project-card:hover::after { opacity: 1; }
-    .project-num { font-size: 0.7rem; color: var(--accent); letter-spacing: 0.1em; margin-bottom: 1rem; }
-    .project-card h3 { font-family: 'DM Serif Display', serif; font-size: 1.4rem; margin-bottom: 0.8rem; color: var(--bg); }
-    .project-card p { font-size: 0.83rem; color: rgba(245,242,238,0.55); margin-bottom: 1.5rem; }
-    .project-tags { display: flex; gap: 0.5rem; flex-wrap: wrap; }
-    .tag { font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.2rem 0.6rem; border: 1px solid rgba(255,255,255,0.15); color: rgba(245,242,238,0.5); }
-
-    /* ── CONTATO ── */
-    #contato .inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: start; }
-    .contact-info p { color: var(--muted); margin-bottom: 2rem; }
-    .contact-links { display: flex; flex-direction: column; gap: 0.8rem; }
-    .contact-link { display: flex; align-items: center; gap: 1rem; color: var(--ink); text-decoration: none; padding: 1rem; border: 1px solid var(--border); transition: border-color 0.2s, background 0.2s; font-size: 0.85rem; }
-    .contact-link:hover { border-color: var(--accent); background: var(--accent-light); }
-    .contact-link span { color: var(--accent); font-size: 1.1rem; }
-    .contact-form { display: flex; flex-direction: column; gap: 1rem; }
-    .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
-    .form-group label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); }
-    .form-group input, .form-group textarea {
-      background: var(--card); border: 1px solid var(--border);
-      padding: 0.85rem 1rem; font-family: 'DM Mono', monospace; font-size: 0.88rem;
-      color: var(--ink); outline: none; transition: border-color 0.2s; resize: none;
-    }
-    .form-group input:focus, .form-group textarea:focus { border-color: var(--accent); }
-    .form-group textarea { height: 120px; }
-    .btn-submit { align-self: flex-start; cursor: pointer; font-family: 'DM Mono', monospace; }
-
-    /* ── FOOTER ── */
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 2rem 3rem;
-      display: flex; justify-content: space-between; align-items: center;
-      font-size: 0.78rem; color: var(--muted);
-      max-width: 100%;
-    }
-
-    /* ── ANIMATIONS ── */
-    @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
-    @keyframes fadeLeft { to { opacity: 1; transform: translateX(0); } }
-    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
-
-    .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease, transform 0.7s ease; }
-    .reveal.visible { opacity: 1; transform: translateY(0); }
-
-    /* ── RESPONSIVE ── */
-    @media (max-width: 768px) {
-      nav { padding: 1.2rem 1.5rem; }
-      .nav-links { display: none; }
-      section { padding: 4rem 1.5rem; }
-      #hero { padding: 0 1.5rem; }
-      .hero-grid { grid-template-columns: 1fr; gap: 2.5rem; padding-top: 6rem; }
-      .hero-visual { order: -1; }
-      .avatar-wrap { width: 260px; height: 300px; }
-      #sobre .inner { grid-template-columns: 1fr; gap: 2.5rem; }
-      .projects-grid { grid-template-columns: 1fr; }
-      #contato .inner { grid-template-columns: 1fr; gap: 2.5rem; }
-      footer { flex-direction: column; gap: 0.5rem; text-align: center; }
-    }
-  </style>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-  <div class="cursor" id="cursor"></div>
+  <!-- FUNDO ANIMADO -->
+  <div class="bg-orbs">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
 
-  <!-- NAV -->
-  <nav id="nav">
-    <a href="#hero" class="nav-logo">Dev.</a>
-    <ul class="nav-links">
-      <li><a href="#sobre">Sobre</a></li>
-      <li><a href="#projetos">Projetos</a></li>
-      <li><a href="#contato">Contato</a></li>
-    </ul>
+  <!-- CABEÇALHO -->
+  <header class="cabecalho">
+    <div class="logo">
+      <div class="logo-mark">
+        <span class="logo-inner"></span>
+      </div>
+      <div class="logo-texto">
+        <span class="logo-nome">Lavanderia</span>
+        <span class="logo-sub">Autoatendimento</span>
+      </div>
+    </div>
+    <div class="cab-direita">
+      <span class="badge-demo">DEMO EXPERIMENTAL</span>
+      <span class="relogio" id="relogio">00:00</span>
+    </div>
+  </header>
+
+  <!-- TRILHA DE ETAPAS -->
+  <nav class="trilha" id="trilha">
+    <div class="trilha-item ativa" data-step="1">
+      <div class="trilha-circulo"><span>1</span></div>
+      <span class="trilha-label">Máquina</span>
+    </div>
+    <div class="trilha-linha" id="linha-1-2"></div>
+    <div class="trilha-item" data-step="2">
+      <div class="trilha-circulo"><span>2</span></div>
+      <span class="trilha-label">Ciclo</span>
+    </div>
+    <div class="trilha-linha" id="linha-2-3"></div>
+    <div class="trilha-item" data-step="3">
+      <div class="trilha-circulo"><span>3</span></div>
+      <span class="trilha-label">Pagamento</span>
+    </div>
+    <div class="trilha-linha" id="linha-3-4"></div>
+    <div class="trilha-item" data-step="4">
+      <div class="trilha-circulo"><span>✓</span></div>
+      <span class="trilha-label">Lavando</span>
+    </div>
   </nav>
 
-  <!-- HERO -->
-  <section id="hero">
-    <div class="hero-grid">
-      <div class="hero-text">
-        <span class="hero-tag">Disponível para projetos</span>
-        <h1>Olá, sou <em>Gil </em></h1>
-        <p class="hero-sub">Desenvolvedor web em formação, apaixonado por criar experiências digitais simples, funcionais e bem feitas.</p>
-        <a href="#projetos" class="btn">Ver projetos</a>
-        <a href="#contato" class="btn btn-ghost">Entrar em contato</a>
+  <!-- ÁREA PRINCIPAL -->
+  <main class="main">
+
+    <!-- ══════════════════════════════════
+         TELA 1 — SELECIONAR MÁQUINA
+    ══════════════════════════════════ -->
+    <section class="tela ativa" id="tela-1">
+      <div class="tela-topo">
+        <h1 class="tela-titulo">Escolha uma <em>máquina</em></h1>
+        <p class="tela-sub">Toque em qualquer máquina disponível para continuar</p>
       </div>
-      <div class="hero-visual">
-        <div class="avatar-wrap">
-          <div class="avatar-initials">SN</div>
-          <div class="avatar-info">
-            <strong>Seu Nome</strong>
-            <span><span class="status-dot"></span>Estudando Dev Web</span>
+
+      <div class="grid-maquinas" id="grid-maquinas">
+
+        <div class="card-maquina disponivel" onclick="App.selecionarMaquina(this, 1)">
+          <div class="maq-numero">01</div>
+          <div class="maq-icone">
+            <div class="maq-drum"></div>
           </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- SOBRE -->
-  <section id="sobre">
-    <div class="inner">
-      <div class="about-text reveal">
-        <p class="section-label">Sobre mim</p>
-        <h2>Quem sou eu?</h2>
-        <p>Sou estudante de desenvolvimento web, explorando o universo do frontend com HTML, CSS e JavaScript. Cada projeto é uma chance de aprender algo novo e transformar código em experiências reais.</p>
-        <p>Atualmente focado em <strong>fundamentos sólidos</strong>: semântica HTML, CSS moderno (Flexbox, Grid) e lógica com JavaScript. Em breve, React e backend.</p>
-        <p>Quando não estou codando, gosto de estudar design de interfaces, ler sobre tecnologia e descobrir novos projetos open source.</p>
-      </div>
-      <div class="skills-grid reveal">
-        <p class="section-label">Habilidades</p>
-        <div class="skill-item">
-          <span class="skill-name"><span>HTML</span><span>90%</span></span>
-          <div class="skill-bar"><div class="skill-fill" data-width="90"></div></div>
-        </div>
-        <div class="skill-item">
-          <span class="skill-name"><span>CSS</span><span>80%</span></span>
-          <div class="skill-bar"><div class="skill-fill" data-width="80"></div></div>
-        </div>
-        <div class="skill-item">
-          <span class="skill-name"><span>JavaScript</span><span>60%</span></span>
-          <div class="skill-bar"><div class="skill-fill" data-width="60"></div></div>
-        </div>
-        <div class="skill-item">
-          <span class="skill-name"><span>Git</span><span>50%</span></span>
-          <div class="skill-bar"><div class="skill-fill" data-width="50"></div></div>
-        </div>
-        <div class="skill-item">
-          <span class="skill-name"><span>Responsivo</span><span>75%</span></span>
-          <div class="skill-bar"><div class="skill-fill" data-width="75"></div></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- PROJETOS -->
-  <section id="projetos">
-    <div class="projects-inner">
-      <p class="section-label reveal">Projetos</p>
-      <h2 class="reveal">O que já construí</h2>
-      <div class="projects-grid">
-
-        <div class="project-card reveal">
-          <p class="project-num">01</p>
-          <h3>Calculadora</h3>
-          <p>Calculadora funcional com operações básicas, construída com HTML, CSS e lógica em JS puro.</p>
-          <div class="project-tags">
-            <span class="tag">HTML</span><span class="tag">CSS</span><span class="tag">JS</span>
+          <div class="maq-info">
+            <span class="maq-status disponivel-tag">Disponível</span>
+            <span class="maq-capacidade">7 kg</span>
           </div>
         </div>
 
-        <div class="project-card reveal">
-          <p class="project-num">02</p>
-          <h3>To-Do List</h3>
-          <p>Gerenciador de tarefas com localStorage, filtros e animações de entrada e saída.</p>
-          <div class="project-tags">
-            <span class="tag">HTML</span><span class="tag">CSS</span><span class="tag">JS</span>
+        <div class="card-maquina em-uso" onclick="App.alertaIndisponivel()">
+          <div class="maq-numero">02</div>
+          <div class="maq-icone girando">
+            <div class="maq-drum"></div>
+          </div>
+          <div class="maq-info">
+            <span class="maq-status em-uso-tag">Em uso</span>
+            <span class="maq-tempo">~18 min</span>
+          </div>
+          <div class="maq-progresso-bar">
+            <div class="maq-progresso-fill" style="width:55%"></div>
           </div>
         </div>
 
-        <div class="project-card reveal">
-          <p class="project-num">03</p>
-          <h3>Landing Page</h3>
-          <p>Página de apresentação de produto fictício com seções responsivas e micro-animações.</p>
-          <div class="project-tags">
-            <span class="tag">HTML</span><span class="tag">CSS</span>
+        <div class="card-maquina disponivel" onclick="App.selecionarMaquina(this, 3)">
+          <div class="maq-numero">03</div>
+          <div class="maq-icone">
+            <div class="maq-drum"></div>
+          </div>
+          <div class="maq-info">
+            <span class="maq-status disponivel-tag">Disponível</span>
+            <span class="maq-capacidade">10 kg</span>
+          </div>
+        </div>
+
+        <div class="card-maquina em-uso" onclick="App.alertaIndisponivel()">
+          <div class="maq-numero">04</div>
+          <div class="maq-icone girando">
+            <div class="maq-drum"></div>
+          </div>
+          <div class="maq-info">
+            <span class="maq-status em-uso-tag">Em uso</span>
+            <span class="maq-tempo">~5 min</span>
+          </div>
+          <div class="maq-progresso-bar">
+            <div class="maq-progresso-fill" style="width:88%"></div>
           </div>
         </div>
 
       </div>
-    </div>
-  </section>
 
-  <!-- CONTATO -->
-  <section id="contato">
-    <div class="inner">
-      <div class="contact-info reveal">
-        <p class="section-label">Contato</p>
-        <h2>Vamos conversar?</h2>
-        <p>Estou aberto a feedback, colaborações, estágios e qualquer oportunidade de aprender.</p>
-        <div class="contact-links">
-          <a href="mailto:seu@email.com" class="contact-link"><span>✉</span> seu@email.com</a>
-          <a href="https://github.com/seuusuario" target="_blank" class="contact-link"><span>⌥</span> github.com/seuusuario</a>
-          <a href="https://linkedin.com/in/seuperfil" target="_blank" class="contact-link"><span>◈</span> linkedin.com/in/seuperfil</a>
-        </div>
+      <div class="tela-rodape">
+        <button class="btn-primario" id="btn-para-ciclo" disabled onclick="App.irPara(2)">
+          <span>Continuar</span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
       </div>
-      <div class="contact-form reveal">
-        <p class="section-label">Mensagem</p>
-        <div class="form-group">
-          <label for="nome">Nome</label>
-          <input type="text" id="nome" placeholder="Seu nome" />
-        </div>
-        <div class="form-group">
-          <label for="email">E-mail</label>
-          <input type="email" id="email" placeholder="seu@email.com" />
-        </div>
-        <div class="form-group">
-          <label for="msg">Mensagem</label>
-          <textarea id="msg" placeholder="Olá, gostaria de..."></textarea>
-        </div>
-        <button class="btn btn-submit" onclick="enviarMensagem()">Enviar mensagem</button>
+    </section>
+
+    <!-- ══════════════════════════════════
+         TELA 2 — ESCOLHER CICLO
+    ══════════════════════════════════ -->
+    <section class="tela" id="tela-2">
+      <div class="tela-topo">
+        <h1 class="tela-titulo">Qual é o <em>ciclo</em>?</h1>
+        <p class="tela-sub" id="sub-maquina">Máquina selecionada — escolha o programa ideal</p>
       </div>
-    </div>
-  </section>
 
-  <!-- FOOTER -->
-  <footer>
-    <span>© 2025 Seu Nome — Feito com HTML, CSS & JS</span>
-    <span>Estudando dev web ☕</span>
-  </footer>
+      <div class="lista-ciclos">
 
-  <script>
-    // ── Cursor personalizado
-    const cursor = document.getElementById('cursor');
-    document.addEventListener('mousemove', e => {
-      cursor.style.left = e.clientX + 'px';
-      cursor.style.top = e.clientY + 'px';
-    });
-    document.querySelectorAll('a, button, .project-card').forEach(el => {
-      el.addEventListener('mouseenter', () => cursor.classList.add('expand'));
-      el.addEventListener('mouseleave', () => cursor.classList.remove('expand'));
-    });
+        <div class="card-ciclo" onclick="App.selecionarCiclo(this, 'Rápido', 30, 5.50)">
+          <div class="ciclo-esq">
+            <div class="ciclo-icone ciclo-rapido">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            </div>
+            <div>
+              <div class="ciclo-nome">Rápido</div>
+              <div class="ciclo-desc">Roupas leves · ideal para o dia a dia</div>
+            </div>
+          </div>
+          <div class="ciclo-dir">
+            <div class="ciclo-tempo">30 min</div>
+            <div class="ciclo-preco">R$ 5,50</div>
+          </div>
+        </div>
 
-    // ── Navbar scroll
-    const nav = document.getElementById('nav');
-    window.addEventListener('scroll', () => {
-      nav.classList.toggle('scrolled', window.scrollY > 40);
-    });
+        <div class="card-ciclo" onclick="App.selecionarCiclo(this, 'Normal', 45, 7.00)">
+          <div class="ciclo-esq">
+            <div class="ciclo-icone ciclo-normal">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            </div>
+            <div>
+              <div class="ciclo-nome">Normal</div>
+              <div class="ciclo-desc">Uso cotidiano · roupas mistas</div>
+            </div>
+          </div>
+          <div class="ciclo-dir">
+            <div class="ciclo-tempo">45 min</div>
+            <div class="ciclo-preco">R$ 7,00</div>
+          </div>
+        </div>
 
-    // ── Reveal on scroll
-    const reveals = document.querySelectorAll('.reveal');
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach((entry, i) => {
-        if (entry.isIntersecting) {
-          setTimeout(() => entry.target.classList.add('visible'), i * 80);
-        }
-      });
-    }, { threshold: 0.12 });
-    reveals.forEach(el => observer.observe(el));
+        <div class="card-ciclo" onclick="App.selecionarCiclo(this, 'Pesado', 60, 9.00)">
+          <div class="ciclo-esq">
+            <div class="ciclo-icone ciclo-pesado">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
+            <div>
+              <div class="ciclo-nome">Pesado</div>
+              <div class="ciclo-desc">Toalhas · jeans · cobertores</div>
+            </div>
+          </div>
+          <div class="ciclo-dir">
+            <div class="ciclo-tempo">60 min</div>
+            <div class="ciclo-preco">R$ 9,00</div>
+          </div>
+        </div>
 
-    // ── Skill bars animadas
-    const skillObserver = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.querySelectorAll('.skill-fill').forEach(bar => {
-            bar.style.width = bar.dataset.width + '%';
-          });
-        }
-      });
-    }, { threshold: 0.3 });
-    const skillSection = document.querySelector('#sobre');
-    if (skillSection) skillObserver.observe(skillSection);
+        <div class="card-ciclo" onclick="App.selecionarCiclo(this, 'Delicado', 40, 8.00)">
+          <div class="ciclo-esq">
+            <div class="ciclo-icone ciclo-delicado">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            </div>
+            <div>
+              <div class="ciclo-nome">Delicado</div>
+              <div class="ciclo-desc">Roupas finas · sintéticos · lingerie</div>
+            </div>
+          </div>
+          <div class="ciclo-dir">
+            <div class="ciclo-tempo">40 min</div>
+            <div class="ciclo-preco">R$ 8,00</div>
+          </div>
+        </div>
 
-    // ── Envio de formulário (simulado)
-    function enviarMensagem() {
-      const nome = document.getElementById('nome').value.trim();
-      const email = document.getElementById('email').value.trim();
-      const msg = document.getElementById('msg').value.trim();
-      if (!nome || !email || !msg) {
-        alert('Por favor, preencha todos os campos.');
-        return;
-      }
-      alert(`Mensagem enviada, ${nome}! Em breve entrarei em contato.`);
-      document.getElementById('nome').value = '';
-      document.getElementById('email').value = '';
-      document.getElementById('msg').value = '';
-    }
+      </div>
 
-    // ── Typed text no hero
-    const typed = document.querySelector('h1 em');
-    const name = typed.textContent;
-    typed.textContent = '';
-    let i = 0;
-    function type() {
-      if (i < name.length) {
-        typed.textContent += name[i++];
-        setTimeout(type, 65);
-      }
-    }
-    setTimeout(type, 900);
-  </script>
-  <script src="script.js"></script>
+      <div class="tela-rodape duplo">
+        <button class="btn-secundario" onclick="App.irPara(1)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          <span>Voltar</span>
+        </button>
+        <button class="btn-primario" id="btn-para-pag" disabled onclick="App.irPara(3)">
+          <span>Ir para pagamento</span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════
+         TELA 3 — PAGAMENTO
+    ══════════════════════════════════ -->
+    <section class="tela" id="tela-3">
+      <div class="tela-topo">
+        <h1 class="tela-titulo">Como vai <em>pagar</em>?</h1>
+      </div>
+
+      <div class="pag-layout">
+
+        <!-- Resumo -->
+        <div class="resumo-card">
+          <div class="resumo-titulo">Resumo</div>
+          <div class="resumo-linha">
+            <span>Máquina</span>
+            <strong id="res-maq">—</strong>
+          </div>
+          <div class="resumo-linha">
+            <span>Ciclo</span>
+            <strong id="res-ciclo">—</strong>
+          </div>
+          <div class="resumo-linha">
+            <span>Duração</span>
+            <strong id="res-dur">—</strong>
+          </div>
+          <div class="resumo-linha resumo-total">
+            <span>Total</span>
+            <strong id="res-total">—</strong>
+          </div>
+        </div>
+
+        <!-- Métodos -->
+        <div class="metodos-grid">
+
+          <button class="btn-metodo pix-btn" onclick="App.selecionarMetodo(this, 'pix')">
+            <div class="metodo-icone">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.9 2C6.4 2 2 6.4 2 11.9s4.4 9.9 9.9 9.9 9.9-4.4 9.9-9.9S17.4 2 11.9 2zm4.4 11.4c-.4.4-.9.6-1.5.6s-1.1-.2-1.5-.6l-1.4-1.4-1.4 1.4c-.4.4-.9.6-1.5.6s-1.1-.2-1.5-.6c-.8-.8-.8-2.1 0-2.9l1.4-1.4-1.4-1.4c-.8-.8-.8-2.1 0-2.9.8-.8 2.1-.8 2.9 0l1.4 1.4 1.4-1.4c.8-.8 2.1-.8 2.9 0 .8.8.8 2.1 0 2.9l-1.4 1.4 1.4 1.4c.9.8.9 2.1.1 2.9z"/></svg>
+            </div>
+            <span class="metodo-nome">PIX</span>
+            <span class="metodo-desc">Instantâneo</span>
+          </button>
+
+          <button class="btn-metodo" onclick="App.selecionarMetodo(this, 'credito')">
+            <div class="metodo-icone">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="1" y="4" width="22" height="16" rx="3"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+            </div>
+            <span class="metodo-nome">Crédito</span>
+            <span class="metodo-desc">Terminal físico</span>
+          </button>
+
+          <button class="btn-metodo" onclick="App.selecionarMetodo(this, 'debito')">
+            <div class="metodo-icone">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="1" y="4" width="22" height="16" rx="3"/><line x1="1" y1="10" x2="23" y2="10"/><line x1="5" y1="15" x2="9" y2="15"/></svg>
+            </div>
+            <span class="metodo-nome">Débito</span>
+            <span class="metodo-desc">Terminal físico</span>
+          </button>
+
+          <button class="btn-metodo" onclick="App.selecionarMetodo(this, 'ficha')">
+            <div class="metodo-icone">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            </div>
+            <span class="metodo-nome">Ficha</span>
+            <span class="metodo-desc">Pague no balcão</span>
+          </button>
+
+        </div>
+
+        <!-- QR PIX (aparece quando PIX selecionado) -->
+        <div class="pix-area" id="pix-area">
+          <div class="pix-qr-wrap">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=DEMO-PIX-LAVANDERIA-2024&bgcolor=ffffff&color=0a0a0a&margin=8" alt="QR Code PIX Demo" class="pix-qr-img" />
+            <div class="pix-scan-line"></div>
+          </div>
+          <div class="pix-instrucoes">
+            <p class="pix-hint">Abra o app do seu banco e escaneie</p>
+            <div class="pix-status-tag" id="pix-status-tag">Aguardando pagamento...</div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="tela-rodape duplo">
+        <button class="btn-secundario" onclick="App.irPara(2)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          <span>Voltar</span>
+        </button>
+        <button class="btn-primario btn-confirmar" id="btn-confirmar" disabled onclick="App.confirmar()">
+          <span>Confirmar e iniciar</span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════
+         TELA 4 — LAVANDO
+    ══════════════════════════════════ -->
+    <section class="tela" id="tela-4">
+      <div class="lavando-wrap">
+
+        <div class="lavando-maquina-visual">
+          <div class="lav-corpo">
+            <div class="lav-visor">
+              <div class="lav-tambor girando-lento">
+                <div class="lav-raio"></div>
+                <div class="lav-raio"></div>
+                <div class="lav-raio"></div>
+              </div>
+              <div class="lav-agua"></div>
+            </div>
+            <div class="lav-painel">
+              <div class="lav-led verde"></div>
+              <div class="lav-led verde piscando"></div>
+              <div class="lav-led apagado"></div>
+            </div>
+          </div>
+          <div class="lav-sombra"></div>
+        </div>
+
+        <div class="lavando-info">
+          <h1 class="lavando-titulo">Lavagem <em>iniciada!</em></h1>
+          <p class="lavando-sub" id="lav-sub">Sua roupa está sendo lavada com carinho</p>
+
+          <div class="lav-detalhes">
+            <div class="lav-detalhe">
+              <span class="lav-detalhe-label">Máquina</span>
+              <span class="lav-detalhe-valor" id="lav-maq">—</span>
+            </div>
+            <div class="lav-detalhe">
+              <span class="lav-detalhe-label">Ciclo</span>
+              <span class="lav-detalhe-valor" id="lav-ciclo">—</span>
+            </div>
+            <div class="lav-detalhe">
+              <span class="lav-detalhe-label">Término</span>
+              <span class="lav-detalhe-valor" id="lav-termino">—</span>
+            </div>
+          </div>
+
+          <div class="progresso-container">
+            <div class="progresso-topo">
+              <span>Progresso</span>
+              <span id="prog-pct">0%</span>
+            </div>
+            <div class="progresso-trilha">
+              <div class="progresso-preench" id="prog-bar"></div>
+            </div>
+          </div>
+
+          <button class="btn-nova" id="btn-nova" style="display:none" onclick="App.reiniciar()">
+            Nova lavagem
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- TOAST DE AVISO -->
+  <div class="toast" id="toast"></div>
+
+  <script src="app.js"></script>
 </body>
 </html>
